@@ -42,16 +42,16 @@ class FormattedPrompts:
 
 class FormattedInputs:
 
-    def __init__(self, formatted_prompts: FormattedPrompts):
+    def __init__(self, formatted_prompts: FormattedPrompts) -> None:
         self.formatted_prompts = formatted_prompts
         self.inputs = []
         self.ground_truths = []
 
-    def sample_input(self, data_point: str):
+    def sample_input(self, data_point: str) -> str:
         exemplar = json.loads(data_point)
         question = self.formatted_prompts.preprocess_text(exemplar['question'])
         answer = self.formatted_prompts.preprocess_text(exemplar['answer'])
-        input_ = f'{self.formatted_prompts.sample_prompts()}Q: {question}\nA: '
+        input_ = f'{self.formatted_prompts.prompts}Q: {question}\nA: '
         self.inputs.append(input_)
         self.ground_truths.append(answer)
         return input_
