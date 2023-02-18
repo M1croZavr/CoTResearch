@@ -62,3 +62,4 @@ if __name__ == '__main__':
     some_inputs = FormattedInputs(prompts)
     with open(Path('../GSM8K_data/test_data.jsonl')) as file:
         print(some_inputs.sample_input(file.readline()))
+        print(some_inputs.ground_truths[-1])
