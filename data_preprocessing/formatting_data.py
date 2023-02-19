@@ -7,6 +7,9 @@ import json
 
 
 class FormattedPrompts:
+    """
+    Samples and stores formatted prompts for model to generate from
+    """
 
     def __init__(self, data_path: str | Path, n_exemplars: int, random_seed: int = 123, calc_annotations: bool = False):
         self.data_path = data_path
@@ -16,6 +19,11 @@ class FormattedPrompts:
         self.prompts = ''
 
     def sample_prompts(self):
+        """
+        Samples prompts from data file according to parameters
+        Returns:
+            prompts (str): total string of all propmpts
+        """
         with open(self.data_path) as file:
             json_lines = file.readlines()
         for json_line_idx in self.__get_exemplars_indices(len(json_lines)):
@@ -27,11 +35,25 @@ class FormattedPrompts:
         return self.prompts
 
     def __get_exemplars_indices(self, n_total: int):
+        """
+        Generates random indices for sampling prompts
+        Parameters:
+            n_total (int): total number of lines in data file
+        Returns:
+            random_indices (np.ndarray): array containing indices
+        """
         np.random.seed(self.random_seed)
         random_indices = np.random.randint(0, n_total, (self.n_exemplars, ))
         return random_indices
 
-    def preprocess_text(self, text):
+    def preprocess_text(self, text: str):
+        """
+        Preprocesses text before adding to a prompt
+        Parameters:
+            text (str): text to preprocess
+        Returns:
+            preprocessed text
+        """
         if not self.calc_annotations:
             text = re.sub(r'<<.+>>', '', text)
         text = text.replace('.\n####', '. The answer is ').replace('\n####', '. The answer is ')
@@ -41,6 +63,9 @@ class FormattedPrompts:
 
 
 class FormattedInputs:
+    """
+    Preprocesses and stores gts and inputs for text generation
+    """
 
     def __init__(self, formatted_prompts: FormattedPrompts) -> None:
         self.formatted_prompts = formatted_prompts
@@ -48,6 +73,13 @@ class FormattedInputs:
         self.ground_truths = []
 
     def sample_input(self, data_point: str) -> str:
+        """
+        Samples input and gt from data point
+        Parameters:
+            data_point (str): data point (json line of GSM8K dataset)
+        Returns:
+            input (str): input for the language model to generate from
+        """
         exemplar = json.loads(data_point)
         question = self.formatted_prompts.preprocess_text(exemplar['question'])
         answer = self.formatted_prompts.preprocess_text(exemplar['answer'])

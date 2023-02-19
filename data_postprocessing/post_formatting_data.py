@@ -1,9 +1,21 @@
 import re
+from collections import Counter
 
 
 class AnswersList(list):
+    """
+    List consisting of predicted answers and ground truth samples
+    """
 
     def add_answer(self, predicted_answers: str, gt_answer: str) -> None:
+        """
+        Adds answer to the list
+        Parameters:
+            predicted_answers (str): string or list of text generations
+            gt_answer (str): string of ground truth answer
+        Returns:
+            None
+        """
         predicted_answer_number = []
         if not isinstance(predicted_answers, list):
             predicted_answers = [predicted_answers]
@@ -23,6 +35,11 @@ class AnswersList(list):
         self.append({'predicted': predicted_answer_number, 'ground_truth': gt_answer_number})
 
     def calculate_accuracy(self) -> float:
+        """
+        Calculates accuracy for the values of list
+        Returns:
+            accuracy (float): total accuracy
+        """
         correct_counter = 0
         total_counter = 0
         if not self:
@@ -35,12 +52,21 @@ class AnswersList(list):
         return correct_counter / total_counter
 
     @staticmethod
-    def __prediction_gt_eq(prediction: str, gt: str) -> bool:
+    def __prediction_gt_eq(prediction: list, gt: str) -> bool:
+        """
+        Equality of prediction and gt samples
+        Parameters:
+            prediction (list): list of predictions
+            gt (str): ground truth sample
+        Returns:
+            true if equal else False
+        """
+        max_value = Counter(prediction).most_common(1)[0][0]
         try:
-            prediction = float(prediction)
+            prediction = float(max_value)
             gt = float(gt)
         except ValueError:
-            pass
+            prediction = max_value
         return prediction == gt
 
 
