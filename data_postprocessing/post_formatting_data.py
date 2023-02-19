@@ -3,16 +3,19 @@ import re
 
 class AnswersList(list):
 
-    def add_answer(self, predicted_answer: str, gt_answer: str) -> None:
-        if 'Q:' in predicted_answer:
-            predicted_answer = predicted_answer.split('Q:')[-1]
-        if 'A:' in predicted_answer:
-            predicted_answer = predicted_answer.split('A:')[-1]
-
-        try:
-            predicted_answer_number = re.findall(r'the answer is\D*(\d+)\D*', predicted_answer.lower())[-1]
-        except IndexError:
-            predicted_answer_number = re.findall(r'\D*(\d+)\D*', predicted_answer.lower())[-1]
+    def add_answer(self, predicted_answers: str, gt_answer: str) -> None:
+        predicted_answer_number = []
+        if not isinstance(predicted_answers, list):
+            predicted_answers = [predicted_answers]
+        for predicted_answer in predicted_answers:
+            if 'Q:' in predicted_answer:
+                predicted_answer = predicted_answer.split('Q:')[-1]
+            if 'A:' in predicted_answer:
+                predicted_answer = predicted_answer.split('A:')[-1]
+            try:
+                predicted_answer_number.append(re.findall(r'the answer is\D*(\d+)\D*', predicted_answer.lower())[-1])
+            except IndexError:
+                predicted_answer_number.append(re.findall(r'\D*(\d+)\D*', predicted_answer.lower())[-1])
         try:
             gt_answer_number = re.findall(r'the answer is\D*(\d+)\D*', gt_answer.lower())[-1]
         except IndexError:
