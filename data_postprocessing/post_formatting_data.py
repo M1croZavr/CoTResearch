@@ -27,12 +27,16 @@ class AnswersList(list):
             try:
                 predicted_answer_number.append(re.findall(r'the answer is\D*(\d+)\D*', predicted_answer.lower())[-1])
             except IndexError:
-                predicted_answer_number.append(re.findall(r'\D*(\d+)\D*', predicted_answer.lower())[-1])
+                predicted_answer_number.append(re.findall(r'\D*(\d+)\D*$', predicted_answer.lower())[-1])
         try:
             gt_answer_number = re.findall(r'the answer is\D*(\d+)\D*', gt_answer.lower())[-1]
         except IndexError:
             gt_answer_number = re.findall(r'\D*(\d+)\D*', gt_answer.lower())[-1]
-        self.append({'predicted': predicted_answer_number, 'ground_truth': gt_answer_number})
+        self.append(
+            {'predicted_answers': predicted_answers,
+             'predicted': predicted_answer_number,
+             'ground_truth': gt_answer_number}
+        )
 
     def calculate_accuracy(self) -> float:
         """
