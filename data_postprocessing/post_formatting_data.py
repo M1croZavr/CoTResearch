@@ -41,7 +41,7 @@ class AnswersList(list):
 
     def write_to_file(self, filename: str) -> None:
         with open(filename, "w") as file:
-            file.writelines([json.dumps(jsonable) for jsonable in self])
+            file.writelines([json.dumps(jsonable) + '\n' for jsonable in self])
 
     def calculate_accuracy(self) -> float:
         """
@@ -88,4 +88,4 @@ if __name__ == '__main__':
         gt_one
     )
     print(answers_list.calculate_accuracy())
-    answers_list.write_to_file("../test.json")
+    answers_list.write_to_file("../test.jsonl")
