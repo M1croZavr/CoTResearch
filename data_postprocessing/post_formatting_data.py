@@ -93,9 +93,9 @@ class AnswersList(list):
             true if equal else False
         """
         max_value = Counter(prediction).most_common(1)[0][0]
-        gt = gt.replace(',', '.')
+        gt = gt.replace(',', '')
         if isinstance(max_value, str):
-            max_value = max_value.replace(',', '.')
+            max_value = max_value.replace(',', '')
         try:
             prediction = float(max_value)
             gt = float(gt)
