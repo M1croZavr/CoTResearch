@@ -11,14 +11,16 @@ class FormattedPrompts:
     Samples and stores formatted prompts for model to generate from
     """
 
-    def __init__(self, data_path: str | Path, n_exemplars: int, random_seed: int = 123, calc_annotations: bool = False):
+    def __init__(
+            self, data_path: str | Path, n_exemplars: int, random_seed: int = 123, calc_annotations: bool = False
+    ) -> None:
         self.data_path = data_path
         self.n_exemplars = n_exemplars
         self.random_seed = random_seed
         self.calc_annotations = calc_annotations
         self.prompts = ''
 
-    def sample_prompts(self):
+    def sample_prompts(self) -> str:
         """
         Samples prompts from data file according to parameters
         Returns:
@@ -34,7 +36,7 @@ class FormattedPrompts:
             self.prompts += prompt
         return self.prompts
 
-    def __get_exemplars_indices(self, n_total: int):
+    def __get_exemplars_indices(self, n_total: int) -> np.ndarray:
         """
         Generates random indices for sampling prompts
         Parameters:
@@ -46,7 +48,7 @@ class FormattedPrompts:
         random_indices = np.random.randint(0, n_total, (self.n_exemplars, ))
         return random_indices
 
-    def preprocess_text(self, text: str):
+    def preprocess_text(self, text: str) -> str:
         """
         Preprocesses text before adding to a prompt
         Parameters:

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import re
 import json
 from collections import Counter
@@ -63,7 +65,7 @@ class AnswersList(list):
         with open(filename, "w") as file:
             file.writelines([json.dumps(jsonable) + '\n' for jsonable in self])
 
-    def calculate_accuracy(self) -> float:
+    def calculate_accuracy(self) -> float | None:
         """
         Calculates accuracy for the values of list
         Returns:
@@ -72,7 +74,7 @@ class AnswersList(list):
         correct_counter = 0
         total_counter = 0
         if not self:
-            return None
+            return
         else:
             for example in self:
                 if self.__prediction_gt_eq(example['predicted'], example['ground_truth']):
@@ -97,7 +99,7 @@ class AnswersList(list):
         try:
             prediction = float(max_value)
             gt = float(gt)
-        except ValueError:
+        except (ValueError, TypeError):
             prediction = max_value
         return prediction == gt
 
