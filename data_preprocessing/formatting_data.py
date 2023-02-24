@@ -22,7 +22,7 @@ class FormattedPrompts:
         """
         Samples prompts from data file according to parameters
         Returns:
-            prompts (str): total string of all propmpts
+            prompts (str): total string of all prompts
         """
         with open(self.data_path) as file:
             json_lines = file.readlines()
