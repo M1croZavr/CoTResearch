@@ -92,10 +92,13 @@ class FormattedInputs:
 
 
 if __name__ == '__main__':
-    prompts = FormattedPrompts(Path('../GSM8K_data/train_data.jsonl'), 4)
+    prompts = FormattedPrompts(Path('../GSM8K_data/train_data.jsonl'), 4, calc_annotations=False)
     some_inputs = FormattedInputs(prompts)
     with open(Path('../GSM8K_data/test_data.jsonl')) as file:
-        # for line in file:
-        #     print(line)
         print(some_inputs.sample_input(file.readline()))
         print(some_inputs.ground_truths[-1])
+    with open(Path('../GSM8K_data/test_data.jsonl')) as file:
+        print(len(file.readlines()))
+    with open(Path('../GSM8K_data/train_data.jsonl')) as file:
+        print(len(file.readlines()))
+
