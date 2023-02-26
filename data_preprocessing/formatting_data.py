@@ -24,7 +24,7 @@ class FormattedPrompts:
         """
         Samples prompts from data file according to parameters
         Returns:
-            prompts (str): total string of all prompts
+            prompts (str): total string of chains of thought
         """
         with open(self.data_path) as file:
             json_lines = file.readlines()
@@ -66,7 +66,7 @@ class FormattedPrompts:
 
 class FormattedInputs:
     """
-    Preprocesses and stores gts and inputs for text generation
+    Preprocesses and stores ground truths and inputs for text generation
     """
 
     def __init__(self, formatted_prompts: FormattedPrompts) -> None:
@@ -93,6 +93,7 @@ class FormattedInputs:
 
 if __name__ == '__main__':
     prompts = FormattedPrompts(Path('../GSM8K_data/train_data.jsonl'), 4, calc_annotations=False)
+    prompts.sample_prompts()
     some_inputs = FormattedInputs(prompts)
     with open(Path('../GSM8K_data/test_data.jsonl')) as file:
         print(some_inputs.sample_input(file.readline()))
@@ -101,4 +102,3 @@ if __name__ == '__main__':
         print(len(file.readlines()))
     with open(Path('../GSM8K_data/train_data.jsonl')) as file:
         print(len(file.readlines()))
-

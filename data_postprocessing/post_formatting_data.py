@@ -7,21 +7,20 @@ from collections import Counter
 
 class AnswersList(list):
     """
-    List consisting of predicted answers and ground truth samples
+    List containing of predicted and ground truth answers
     """
 
     def add_answer(self, predicted_answers: str, gt_answer: str) -> None:
         """
-        Adds answer to the list
+        Adds a predicted answer and ground truth to the list
         Parameters:
-            predicted_answers (str): string or list of text generations
+            predicted_answers (str): string or list of model generations outputs
             gt_answer (str): string of ground truth answer
         Returns:
             None
         """
         digits = {str(digit) for digit in range(10)}
-        # answer_is_re = re.compile(r'the answer is[^\d+-]*([+-]?\d+[.,]?\d*)\D*')
-        common_re = re.compile(r'[^+\-\d]*([+-]?\d+[.,]\d+|[+-]?\d+)[^+\-\d]*')
+        last_number_re = re.compile(r'[^+\-\d]*([+-]?\d+[.,]\d+|[+-]?\d+)[^+\-\d]*')
         predicted_answer_number = []
         if not isinstance(predicted_answers, list):
             predicted_answers = [predicted_answers]
@@ -35,19 +34,13 @@ class AnswersList(list):
                 continue
             if 'the answer is' in predicted_answer.lower():
                 predicted_answer = predicted_answer.lower().split('the answer is')[-1]
-            predicted_answer_number.append(common_re.findall(predicted_answer.lower())[-1])
-            # else:
-            #     try:
-            #         predicted_answer_number.append(answer_is_re.findall(predicted_answer.lower())[-1])
-            #     except IndexError:
-            #         predicted_answer_number.append(common_re.findall(predicted_answer.lower())[-1])
+            try:
+                predicted_answer_number.append(last_number_re.findall(predicted_answer.lower())[-1])
+            except IndexError:
+                predicted_answer_number.append(None)
         if 'the answer is' in gt_answer.lower():
             gt_answer = gt_answer.lower().split('the answer is')[-1]
-        gt_answer_number = common_re.findall(gt_answer.lower())[-1]
-        # try:
-        #     gt_answer_number = answer_is_re.findall(gt_answer.lower())[-1]
-        # except IndexError:
-        #     gt_answer_number = common_re.findall(gt_answer.lower())[-1]
+        gt_answer_number = last_number_re.findall(gt_answer.lower())[-1]
         self.append(
             {
                 'predicted_answers': predicted_answers,
@@ -58,7 +51,7 @@ class AnswersList(list):
 
     def write_to_file(self, filename: str) -> None:
         """
-        Writes result in jsonl format file
+        Writes each row of result in jsonl format file
         Parameters:
             filename (str): filename to save
         """
@@ -92,6 +85,7 @@ class AnswersList(list):
         Returns:
             true if equal else False
         """
+        # Extracting most common value in case of ensemble
         max_value = Counter(prediction).most_common(1)[0][0]
         gt = gt.replace(',', '')
         if isinstance(max_value, str):
