@@ -92,7 +92,7 @@ class FormattedInputs:
 
 
 if __name__ == '__main__':
-    prompts = FormattedPrompts(Path('../GSM8K_data/train_data.jsonl'), 4, calc_annotations=False)
+    prompts = FormattedPrompts(Path('../GSM8K_data/train_data.jsonl'), 2, calc_annotations=True)
     prompts.sample_prompts()
     some_inputs = FormattedInputs(prompts)
     with open(Path('../GSM8K_data/test_data.jsonl')) as file:
